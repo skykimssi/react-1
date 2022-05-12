@@ -49,14 +49,18 @@ class Game extends React.Component {
 		super(props);
 		this.state = {
 			history: [{
-				squares: Array(9).fill(null)
+				squares: Array(9).fill(null),
+				x : 0,
+				y : 0,
 			}],
-			xIsNext: true
+			xIsNext: true,
+			stepNumber: 0,
 		};
 	}
 
 	handleClick(i) {
-		const history = this.state.history;
+		const history = this.state.history.slice(0,this.state.stepNumber + 1);
+		
 		const current = history[history.length - 1];
 		const squares = current.squares.slice();
 		if (calculateWinner(squares) || squares[i]) {
@@ -65,23 +69,37 @@ class Game extends React.Component {
 		squares[i] = this.state.xIsNext ? 'X' : 'O';
 		this.setState({
 			history: history.concat([{
-				squares: squares
+				squares: squares,
+				//x : parseInt(i/3)+1,
+				x : Math.trunc((i/3)+1),
+				y : (i%3)+1,
 			}]),
 			xIsNext: !this.state.xIsNext,
+			stepNumber: history.length,
 		});
+	}
+
+	jumpTo(step){
+		this.setState({
+			stepNumber: step,
+			xIsNext: (step % 2) === 0,
+		})
 	}
 
 	render() {
 		const history = this.state.history;
-		const current = history[history.length - 1];
+		const current = history[this.state.stepNumber];
 		const winner = calculateWinner(current.squares);
 
-		const moves = history.map((step, move) => {
+		const moves = history.map((step, move, array) => {
+			//console.log(array);
 			const desc = move ?
-				'Go to move #' + move :
+				//ES6 백틱 사용
+				//'Go to move #' + move + " ( "+step.x+","+step.y+" )":
+				`Go to move # ${move} ( ${step.x}, ${step.y} )`:
 				'Go to game start';
 			return (
-				<li>
+				<li key={move}>
 					<button onClick={() => this.jumpTo(move)}>{desc}</button>
 				</li>
 			);
