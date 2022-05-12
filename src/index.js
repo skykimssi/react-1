@@ -50,11 +50,12 @@ class Game extends React.Component {
 		this.state = {
 			history: [{
 				squares: Array(9).fill(null),
-				x : 0,
-				y : 0,
+				x : null,
+				y : null,
 			}],
 			xIsNext: true,
 			stepNumber: 0,
+			
 		};
 	}
 
@@ -90,17 +91,20 @@ class Game extends React.Component {
 		const history = this.state.history;
 		const current = history[this.state.stepNumber];
 		const winner = calculateWinner(current.squares);
-
+		
 		const moves = history.map((step, move, array) => {
-			//console.log(array);
+			
+			if(move == this.state.stepNumber){
+				
+			}
 			const desc = move ?
 				//ES6 백틱 사용
-				//'Go to move #' + move + " ( "+step.x+","+step.y+" )":
+				//'Go to move #' + move + ' ( '+step.x+','+step.y+' )':
 				`Go to move # ${move} ( ${step.x}, ${step.y} )`:
 				'Go to game start';
 			return (
 				<li key={move}>
-					<button onClick={() => this.jumpTo(move)}>{desc}</button>
+					<button className={move == this.state.stepNumber ? "active" : ""} onClick={() => this.jumpTo(move)}>{desc}</button>
 				</li>
 			);
 		});
