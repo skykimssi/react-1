@@ -93,10 +93,6 @@ class Game extends React.Component {
 		const winner = calculateWinner(current.squares);
 		
 		const moves = history.map((step, move, array) => {
-			
-			if(move == this.state.stepNumber){
-				
-			}
 			const desc = move ?
 				//ES6 백틱 사용
 				//'Go to move #' + move + ' ( '+step.x+','+step.y+' )':
