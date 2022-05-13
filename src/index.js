@@ -11,6 +11,14 @@ function Square(props) {
 	);
 }
 
+function SortBtn(props){
+	return(
+		<button className="sortBtn" onClick={props.onClick}>
+			{props.btnText}
+		</button>
+	)
+}
+
 class Board extends React.Component {
 	renderSquare(i) {
 		return (
@@ -84,13 +92,18 @@ class Game extends React.Component {
 			}],
 			xIsNext: true,
 			stepNumber: 0,
-
+			sort : true,
 		};
+	}
+
+	sortBtnClick(){
+		this.setState({
+			sort: !this.state.sort,
+		})
 	}
 
 	handleClick(i) {
 		const history = this.state.history.slice(0, this.state.stepNumber + 1);
-
 		const current = history[history.length - 1];
 		const squares = current.squares.slice();
 		if (calculateWinner(squares) || squares[i]) {
@@ -133,7 +146,11 @@ class Game extends React.Component {
 				</li>
 			);
 		});
-
+		//console.log(moves);
+		//정렬 상태에 따라 moves 순서 바꾸기
+		if(!this.state.sort){
+			moves.reverse();
+		}
 		let status;
 		if (winner) {
 			status = 'Winner: ' + winner;
@@ -151,6 +168,7 @@ class Game extends React.Component {
 				</div>
 				<div className="game-info">
 					<div>{status}</div>
+					<ol><SortBtn btnText={this.state.sort?"오름차순 ▲":"내림차순 ▼"} onClick={_=>this.sortBtnClick()} /></ol>
 					<ol>{moves}</ol>
 				</div>
 			</div>
