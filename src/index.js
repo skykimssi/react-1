@@ -5,7 +5,7 @@ import "./index.css";
 
 function Square(props) {
 	return (
-		<button className="square" onClick={props.onClick}>
+		<button className={"square" + (props.highlight?" highlight":"")} onClick={props.onClick}>
 			{props.value}
 		</button>
 	);
@@ -21,9 +21,15 @@ function SortBtn(props){
 
 class Board extends React.Component {
 	renderSquare(i) {
+		let highlight = false;
+		if(this.props.winner){
+			if(this.props.winner.winSquares.indexOf(i) >= 0){highlight = true}
+		}
+		
 		return (
 			<Square
 				key={i} //안넣어주면 계속 key 없다고 에러뜸
+				highlight={highlight}
 				value={this.props.squares[i]}
 				onClick={() => this.props.onClick(i)}
 			/>
@@ -152,8 +158,11 @@ class Game extends React.Component {
 			moves.reverse();
 		}
 		let status;
+		
 		if (winner) {
-			status = 'Winner: ' + winner;
+			status = 'Winner: ' + winner.winPlayer;
+		} else if (winner == null && this.state.stepNumber == 9) {
+			status = "무승부";
 		} else {
 			status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 		}
@@ -162,6 +171,7 @@ class Game extends React.Component {
 			<div className="game">
 				<div className="game-board">
 					<Board
+						winner={winner ? winner : null}
 						squares={current.squares}
 						onClick={(i) => this.handleClick(i)}
 					/>
@@ -195,8 +205,10 @@ function calculateWinner(squares) {
 	for (let i = 0; i < lines.length; i++) {
 		const [a, b, c] = lines[i];
 		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-			return squares[a];
+			return {winPlayer : squares[a], winSquares : [a,b,c]};
 		}
 	}
 	return null;
 }
+
+

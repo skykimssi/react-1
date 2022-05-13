@@ -52,3 +52,7 @@ ol, ul {
 .active {
   font-weight: 700;
 }
+
+.highlight{
+  background-color: #ccc;
+}
